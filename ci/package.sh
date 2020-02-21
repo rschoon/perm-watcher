@@ -13,7 +13,7 @@ mkdir -p dist $WORKDIR/$PKG
 
 cp target/release/perm-watcher $WORKDIR/$PKG/
 
-tar -cjf dist/perm-watcher$VERSION.tar.bz2 -C $WORKDIR $PKG
+tar -cjf dist/perm-watcher-bin$VERSION.tar.bz2 -C $WORKDIR $PKG
 
 rm -r $WORKDIR
 
