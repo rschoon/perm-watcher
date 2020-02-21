@@ -11,3 +11,5 @@ build:
     paths:
       - dist/
     expire_in: 12 months
+  tags:
+    - docker
