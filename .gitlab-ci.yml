@@ -1,0 +1,13 @@
+stages:
+  - build
+
+build:
+  stage: build
+  image: rust:1
+  script:
+    - cargo build --release
+    - ci/package.sh
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 12 months
