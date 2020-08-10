@@ -4,7 +4,6 @@ extern crate log;
 use chan_signal::Signal;
 use clap::{App, Arg};
 use env_logger::Env;
-use libc;
 use notify::{RecommendedWatcher, Watcher};
 use std::error::Error;
 use std::os::unix::ffi::OsStrExt;
