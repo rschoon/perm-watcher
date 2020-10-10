@@ -1,11 +1,53 @@
+
 stages:
+  - setup
+  - test
   - build
+
+variables:
+  CARGO_HOME: $CI_PROJECT_DIR/.cargo
+
+setup:
+  stage: setup
+  image: docker:19.03.12
+  services:
+    - docker:19.03.12-dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker pull $CI_REGISTRY_IMAGE:ci-latest || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE:ci-latest --tag $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:ci-latest ci
+    - docker push $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:ci-latest
+  tags:
+    - docker
+
+test:
+  stage: test
+  image: $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA
+  script:
+    - cargo test --all --color always
+  cache:
+    paths:
+      - .cargo
+  tags:
+    - docker
+
+clippy:
+  stage: test
+  image: $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA
+  script:
+    - cargo clippy --color always
+  cache:
+    paths:
+      - .cargo
+  tags:
+    - docker
 
 build:
   stage: build
-  image: rust:1
+  image: $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA
   script:
-    - cargo build --release
+    - cargo build --release --color always
     - ci/package.sh
   artifacts:
     paths:
