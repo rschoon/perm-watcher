@@ -1,4 +1,6 @@
 #[macro_use]
+extern crate clap;
+#[macro_use]
 extern crate log;
 
 use chan_signal::Signal;
@@ -121,6 +123,7 @@ fn convert_dir_perms(mode: u32) -> u32 {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = App::new("perm-watcher")
+        .version(crate_version!())
         .arg(
             Arg::with_name("perms")
                 .long("--perms")
