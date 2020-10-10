@@ -3,7 +3,6 @@ extern crate clap;
 #[macro_use]
 extern crate log;
 
-use chan_signal::Signal;
 use clap::{App, Arg};
 use env_logger::Env;
 use notify::{RecommendedWatcher, Watcher};
@@ -121,6 +120,23 @@ fn convert_dir_perms(mode: u32) -> u32 {
     mode
 }
 
+fn wait_for_terminate() -> i32 {
+    use libc::sigset_t;
+
+    let mut retsig = 0;
+
+    unsafe {
+        let mut sigset: sigset_t = std::mem::zeroed();
+        libc::sigemptyset(&mut sigset);
+        libc::sigaddset(&mut sigset, libc::SIGINT);
+        libc::sigaddset(&mut sigset, libc::SIGTERM);
+        libc::sigprocmask(libc::SIG_BLOCK, &sigset, std::ptr::null_mut::<sigset_t>());
+        libc::sigwait(&sigset, &mut retsig);
+    }
+
+    retsig
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = App::new("perm-watcher")
         .version(crate_version!())
@@ -180,9 +196,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         handle_path(&target, &perm_config)
     }
 
-    /* Wait forever, or until signal */
-    let signal = chan_signal::notify(&[Signal::INT, Signal::TERM]);
-    signal.recv().unwrap();
+    /* Run forever, or until signal */
+    wait_for_terminate();
 
     info!("Quitting");
     Ok(())
