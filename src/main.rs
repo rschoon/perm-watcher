@@ -4,7 +4,6 @@ extern crate clap;
 extern crate log;
 
 use clap::{App, Arg};
-use env_logger::Env;
 use notify::{RecommendedWatcher, Watcher};
 use std::error::Error;
 use std::os::unix::ffi::OsStrExt;
@@ -162,7 +161,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         )
         .get_matches();
 
-    env_logger::from_env(Env::default().default_filter_or("info")).init();
+    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
+
 
     let perms = matches
         .value_of("perms")
