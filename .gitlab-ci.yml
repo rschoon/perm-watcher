@@ -3,6 +3,7 @@ stages:
   - setup
   - test
   - build
+  - publish
 
 variables:
   CARGO_HOME: $CI_PROJECT_DIR/.cargo
@@ -49,9 +50,22 @@ build:
   script:
     - cargo build --release --color always
     - ci/package.sh
+  cache:
+    paths:
+      - .cargo
   artifacts:
     paths:
       - dist/
     expire_in: 12 months
   tags:
     - docker
+
+upload-s3:
+  tags:
+    - docker
+  stage: publish
+  image: docker.git.cornhooves.org/build-tools/deb-s3:latest
+  rules:
+    - if: "$AWS_SECRET_ACCESS_KEY"
+  script:
+    - ci/publish-s3.sh
