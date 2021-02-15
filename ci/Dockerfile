@@ -10,4 +10,4 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > /rustup-init.sh 
     && /bin/sh /rustup-init.sh -y --default-toolchain $RUST_VERSION \
     && (cd /usr/local/bin; for i in $HOME/.cargo/bin/*; do ln -s $i; done)
 RUN rustup component add clippy
-RUN cargo install cargo-deb
+RUN cargo install cargo-deb && ln -s $HOME/.cargo/bin/cargo-deb /usr/local/bin
