@@ -8,7 +8,7 @@ PKG=perm-watcher
 if [ -z "$CI_COMMIT_TAG" ] || [ ! -z "$DEV_SNAPSHOT" ]; then
     REL=`date +"%Y%m%d%H%M%S"`
     VERSION=`cargo metadata --format-version 1 | jq -r '.packages[] | select(.name=="perm-watcher") | .version'`
-    DEB_ARGS="--deb-version $VERSION-0.$REL"
+    DEB_ARGS="--deb-version "`echo $VERSION | sed "s/-dev/~0dev$REL/"`
 fi
 
 cargo deb $DEB_ARGS
