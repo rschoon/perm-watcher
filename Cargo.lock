@@ -330,7 +330,7 @@ checksum = "13bd41f508810a131401606d54ac32a467c97172d74ba7662562ebba5ad07fa0"
 
 [[package]]
 name = "perm-watcher"
-version = "1.0.2"
+version = "1.0.3-dev"
 dependencies = [
  "clap",
  "env_logger",
