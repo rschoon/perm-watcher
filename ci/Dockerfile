@@ -7,10 +7,7 @@ RUN apt-get update \
     && apt-get install -y curl jq build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-RUN useradd -ms /bin/bash builduser
-USER builduser
-
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
     sh -s -- -y --default-toolchain $RUST_VERSION
-ENV PATH="/home/builduser/.cargo/bin:${PATH}"
+ENV PATH="/root/.cargo/bin:${PATH}"
 RUN cargo install cargo-deb
