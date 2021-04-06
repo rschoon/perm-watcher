@@ -14,3 +14,8 @@ log = "0.4"
 
 [package.metadata.release]
 dev-version-ext="dev"
+post-release-commit-message = """
+(cargo-release) start next version {{next_version}}
+
+[ci skip]
+"""
