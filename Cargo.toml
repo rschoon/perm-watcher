@@ -2,6 +2,7 @@
 name = "perm-watcher"
 version = "1.0.4-dev"
 authors = ["Robin Schoonover <robin@cornhooves.org>"]
+description = "Change watched file permission bits automatically"
 edition = "2018"
 publish = false
 
