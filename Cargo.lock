@@ -240,7 +240,7 @@ dependencies = [
 
 [[package]]
 name = "perm-watcher"
-version = "1.0.3"
+version = "1.0.4-dev"
 dependencies = [
  "clap",
  "env_logger",
