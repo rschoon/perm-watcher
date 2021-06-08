@@ -72,7 +72,11 @@ fn handle_path(path: &Path, config: &PermConfig) {
     let md = {
         let md = path.metadata();
         if let Err(err) = md {
-            error!("Couldn't get metadata for {}: {}", path.display(), err);
+            if matches!(err.kind(), std::io::ErrorKind::NotFound) {
+                debug!("Couldn't get metadata for {}: {}", path.display(), err);
+            } else {
+                error!("Couldn't get metadata for {}: {}", path.display(), err);
+            }
             return;
         }
         md.unwrap()
