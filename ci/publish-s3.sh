@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 if [ ! -z "$GPG_SIGNING_KEY" ]; then (cat <<END
 $GPG_SIGNING_KEY
