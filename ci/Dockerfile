@@ -1,7 +1,7 @@
 
 FROM buildpack-deps:stretch
 
-ENV RUST_VERSION=1.52.1
+ENV RUST_VERSION=1.53
 
 RUN apt-get update \
     && apt-get install -y curl jq build-essential \
