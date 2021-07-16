@@ -24,4 +24,4 @@ deb-s3-clean \
     --sign="$GPG_SIGNING_KEY_ID" \
     --s3-region us-west-2 -b rschoon-deb --prefix=tools \
     -a amd64 -m $component -c $codename \
-    --keep-releases 5 --keep-releases-last 10 --keep-versions 20
+    --keep-releases 5 --keep-releases-last 25 --keep-versions 20
