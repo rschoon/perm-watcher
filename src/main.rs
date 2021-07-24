@@ -186,7 +186,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     };
 
     let perm_config_clone = perm_config.clone();
-    let mut watcher: RecommendedWatcher = Watcher::new_immediate(move |res| match res {
+    let mut watcher = RecommendedWatcher::new(move |res| match res {
         Ok(res) => handle_change(&res, &perm_config_clone),
         Err(err) => error!("Error during watch: {}", err),
     })?;
