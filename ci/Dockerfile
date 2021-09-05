@@ -14,4 +14,4 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 
 # deb-s3 doesn't support control.tar.xz, so disable lzma feature
 RUN cargo install cargo-deb --no-default-features
-RUN cargo install cargo-audit
+RUN cargo install cargo-audit cargo-make

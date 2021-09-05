@@ -1,6 +1,7 @@
 
 stages:
   - setup
+  - fetch
   - test
   - build
   - publish
@@ -21,6 +22,18 @@ setup:
     - docker build --cache-from $CI_REGISTRY_IMAGE:$tag_src --tag $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:$tag_src ci
     - docker push $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE:$tag_src
+  tags:
+    - docker
+
+fetch:
+  stage: fetch
+  image: $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA
+  script:
+    - cargo make fetch
+  cache:
+    paths:
+      - .cargo
+      - frontend/node_modules
   tags:
     - docker
 
