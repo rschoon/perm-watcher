@@ -9,6 +9,7 @@ stages:
 variables:
   CARGO_HOME: $CI_PROJECT_DIR/.cargo
   CARGO_INCREMENTAL: 0
+  CARGO_TERM_COLOR: always
 
 setup:
   stage: setup
@@ -63,7 +64,7 @@ audit:
   stage: test
   image: $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA
   script:
-    - ci/audit.sh --color always
+    - cargo make audit
   cache:
     paths:
       - .cargo
