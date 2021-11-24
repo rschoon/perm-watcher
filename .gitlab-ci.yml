@@ -34,7 +34,6 @@ fetch:
   cache:
     paths:
       - .cargo
-      - frontend/node_modules
   tags:
     - docker
 
