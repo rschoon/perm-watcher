@@ -7,7 +7,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
-clap = "~2.33.0"
+clap = { version = "3.2.0", features = ["derive", "cargo"] }
 env_logger = "0.9"
 notify = "=5.0.0-pre.15"
 libc = "0.2.66"

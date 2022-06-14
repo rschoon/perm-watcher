@@ -1,14 +1,37 @@
-#[macro_use]
-extern crate clap;
+
 #[macro_use]
 extern crate log;
 
-use clap::{App, Arg};
+use clap::Parser;
 use notify::{RecommendedWatcher, Watcher};
 use std::error::Error;
 use std::os::unix::ffi::OsStrExt;
 use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
+
+#[derive(Parser, Debug)]
+#[clap(about, version)]
+struct Args {
+    /// Unix permissions bits
+    #[clap(short, long, value_parser=parse_octal, default_value="0644")]
+    perms: u32,
+
+    /// Unix permissions bits (optional directory only)
+    #[clap(short, long, value_parser=parse_octal)]
+    dir_perms: Option<u32>,
+
+    /// Whether to require exact permissions
+    #[clap(long, value_parser)]
+    exact: bool,
+
+    /// Target directories to watch
+    #[clap(value_parser)]
+    targets: Vec<PathBuf>,
+}
+
+fn parse_octal(s: &str) -> Result<u32, Box<dyn Error + Send + Sync + 'static>> {
+    Ok(u32::from_str_radix(s, 8)?)
+}
 
 #[derive(Clone)]
 struct PermConfig {
@@ -141,48 +164,15 @@ fn wait_for_terminate() -> i32 {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let matches = App::new("perm-watcher")
-        .version(crate_version!())
-        .arg(
-            Arg::with_name("perms")
-                .long("--perms")
-                .short("-p")
-                .takes_value(true)
-                .default_value("0644"),
-        )
-        .arg(
-            Arg::with_name("dir-perms")
-                .long("--dir-perms")
-                .short("-d")
-                .takes_value(true),
-        )
-        .arg(Arg::with_name("exact").long("--exact"))
-        .arg(
-            Arg::with_name("targets")
-                .index(1)
-                .multiple(true)
-                .takes_value(true),
-        )
-        .get_matches();
+    let args = Args::parse();
 
     env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
 
-
-    let perms = matches
-        .value_of("perms")
-        .ok_or_else(|| "Octal permission required".to_owned())
-        .and_then(|v| u32::from_str_radix(v, 8).map_err(|e| e.to_string()))?;
-    let dir_perms = match matches.value_of("dir-perms") {
-        Some(v) => u32::from_str_radix(v, 8).map_err(|e| e.to_string())?,
-        None => convert_dir_perms(perms),
-    };
-    let exact = matches.is_present("exact");
-    let targets = matches.values_of_os("targets").ok_or("Targets required")?;
-
+    let dir_perms = args.dir_perms.unwrap_or_else(||convert_dir_perms(args.perms));
     let perm_config = PermConfig {
-        perms,
+        perms: args.perms,
         dir_perms,
-        exact,
+        exact: args.exact,
     };
 
     let perm_config_clone = perm_config.clone();
@@ -191,9 +181,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Err(err) => error!("Error during watch: {}", err),
     })?;
 
-    for target in targets {
-        let target = PathBuf::from(target);
-
+    for target in args.targets {
         info!("Adding watch for {}", target.display());
         watcher.watch(&target, notify::RecursiveMode::Recursive)?;
 
