@@ -1,6 +1,6 @@
 [package]
 name = "perm-watcher"
-version = "1.0.7"
+version = "1.0.8-dev"
 authors = ["Robin Schoonover <robin@cornhooves.org>"]
 description = "Change watched file permission bits automatically"
 edition = "2021"
