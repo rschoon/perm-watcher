@@ -3,7 +3,7 @@
 extern crate log;
 
 use clap::Parser;
-use notify::{RecommendedWatcher, Watcher};
+use notify::{recommended_watcher, Watcher};
 use std::error::Error;
 use std::os::unix::ffi::OsStrExt;
 use std::os::unix::fs::MetadataExt;
@@ -176,7 +176,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     };
 
     let perm_config_clone = perm_config.clone();
-    let mut watcher = RecommendedWatcher::new(move |res| match res {
+    let mut watcher = recommended_watcher(move |res| match res {
         Ok(res) => handle_change(&res, &perm_config_clone),
         Err(err) => error!("Error during watch: {}", err),
     })?;
