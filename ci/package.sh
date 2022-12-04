@@ -5,10 +5,13 @@ cd `dirname $0`/..
 WORKDIR=target/pkg
 PKG=perm-watcher
 
-if [ -z "$CI_COMMIT_TAG" ] || [ ! -z "$DEV_SNAPSHOT" ]; then
+VERSION=`cargo metadata --format-version 1 | jq -r '.packages[] | select(.name=="'"$PKG"'") | .version' | sed 's/-\(dev\|alpha\|beta\)/~\1/'`
+if [ -z "$CI_COMMIT_TAG" ] || [ -n "$DEV_SNAPSHOT" ]; then
     REL=`date +"%Y%m%d%H%M%S"`
-    VERSION=`cargo metadata --format-version 1 | jq -r '.packages[] | select(.name=="perm-watcher") | .version'`
-    DEB_ARGS="--deb-version "`echo $VERSION | sed "s/-dev/~0dev$REL/"`
+    if ! echo "$VERSION" | grep -q "dev"; then
+        VERSION="$VERSION-dev"
+    fi
+    DEB_ARGS="--deb-version $VERSION.$REL"
 fi
 
 cargo deb $DEB_ARGS

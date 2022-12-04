@@ -14,10 +14,9 @@ libc = "0.2.66"
 log = "0.4"
 
 [package.metadata.release]
-dev-version = true
-dev-version-ext = "dev"
-post-release-commit-message = """
-(cargo-release) start next version {{next_version}}
-
-[ci skip]
+pre-release-commit-message = """
+Release {{crate_name}} version {{version}}
+"""
+tag-message = """
+Release {{crate_name}} version {{version}}
 """
