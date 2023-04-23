@@ -1,90 +1,31 @@
-
 stages:
-  - setup
-  - fetch
   - test
   - build
   - publish
 
 variables:
-  CARGO_HOME: $CI_PROJECT_DIR/.cargo
-  CARGO_INCREMENTAL: 0
-  CARGO_TERM_COLOR: always
-
-setup:
-  stage: setup
-  image: docker:20.10.5
-  services:
-    - docker:20.10.5-dind
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - tag_src=ci-src-$(sha256sum ci/Dockerfile | awk '{print $1}')
-    - docker pull $CI_REGISTRY_IMAGE:$tag_src || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE:$tag_src --tag $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:$tag_src ci
-    - docker push $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA
-    - docker push $CI_REGISTRY_IMAGE:$tag_src
-  tags:
-    - docker
-
-fetch:
-  stage: fetch
-  image: $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA
-  script:
-    - cargo make fetch
-  cache:
-    paths:
-      - .cargo
-  tags:
-    - docker
+  EARTHLY_CI: "true"
+  FORCE_COLOR: "1"
 
 test:
   stage: test
-  image: $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA
   script:
-    - cargo test --all --color always
-  cache:
-    paths:
-      - .cargo
+    - earthly +audit
+    - earthly +clippy
+    - earthly +test
   tags:
-    - docker
-
-clippy:
-  stage: test
-  image: $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA
-  script:
-    - cargo clippy --color always
-  cache:
-    paths:
-      - .cargo
-  tags:
-    - docker
-
-audit:
-  stage: test
-  image: $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA
-  script:
-    - cargo make audit
-  cache:
-    paths:
-      - .cargo
-  tags:
-    - docker
+    - earthly
 
 build:
   stage: build
-  image: $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA
   script:
-    - cargo build --release --color always
-    - ci/package.sh
-  cache:
-    paths:
-      - .cargo
+    - earthly -a +build/dist --CI_COMMIT_TAG=$CI_COMMIT_TAG
   artifacts:
     paths:
       - dist/
     expire_in: 6 months
   tags:
-    - docker
+    - earthly
 
 upload-s3:
   tags:

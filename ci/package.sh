@@ -2,6 +2,7 @@
 
 cd `dirname $0`/..
 
+dist="${DISTDIR:-dist}"
 WORKDIR=target/pkg
 PKG=perm-watcher
 
@@ -20,11 +21,11 @@ if [ ! -z "$VERSION" ]; then
     VERSION_SUFFIX="-$VERSION"
 fi
 
-mkdir -p dist $WORKDIR/$PKG
+mkdir -p $dist $WORKDIR/$PKG
 
-cp target/debian/*.deb dist/
+cp target/debian/*.deb $dist/
 cp target/release/perm-watcher $WORKDIR/$PKG/
-tar -cjf dist/perm-watcher-bin$VERSION_SUFFIX.tar.bz2 -C $WORKDIR $PKG
+tar -cjf $dist/perm-watcher-bin$VERSION_SUFFIX.tar.bz2 -C $WORKDIR $PKG
 
 rm -r $WORKDIR
 
