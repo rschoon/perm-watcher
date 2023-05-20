@@ -6,6 +6,8 @@ setup:
 
     ENV RUST_VERSION=1.69
 
+    RUN echo 'deb http://archive.debian.org/debian/ stretch contrib main non-free' > /etc/apt/sources.list
+
     RUN apt-get update \
         && apt-get install -y curl jq build-essential \
         && rm -rf /var/lib/apt/lists/*
