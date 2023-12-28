@@ -4,7 +4,7 @@ VERSION 0.7
 setup:
     FROM docker.io/buildpack-deps:stretch
 
-    ENV RUST_VERSION=1.69
+    ENV RUST_VERSION=1.75
 
     RUN echo 'deb http://archive.debian.org/debian/ stretch contrib main non-free' > /etc/apt/sources.list
 
