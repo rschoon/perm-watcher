@@ -1,5 +1,5 @@
 
-permatcher
+perm-watcher
 ==========
 
 Change watched file permission bits automatically.
