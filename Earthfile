@@ -45,7 +45,7 @@ clippy:
 
 build:
     FROM +fetch
-    ARG CI_COMMIT_TAG
+    ARG REF_TYPE
     RUN cargo build --release --color always
-    RUN CI_COMMIT_TAG=$CI_COMMIT_TAG DISTDIR=/dist ci/package.sh
+    RUN REF_TYPE=$REF_TYPE DISTDIR=/dist ci/package.sh
     SAVE ARTIFACT /dist

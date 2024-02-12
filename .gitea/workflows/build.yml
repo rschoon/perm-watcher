@@ -1,0 +1,22 @@
+name: Build
+run-name: build
+on: [ push ]
+
+jobs:
+  build:
+    runs-on: earthly
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Test
+        run: earthly +test
+      - name: Build
+        run: earthly -a +build/dist --REF_TYPE=${{gitea.ref_type}}
+      - name: Archive debian package
+        uses: https://gitea.com/actions/upload-artifact@v3
+        with:
+           name: debian package
+           path: dist/*.deb
+      - name: Publish debian package
+        if: ${{ gitea.ref_type == 'tag' || gitea.ref_name == 'master' }}
+        run: curl --user ${{ secrets.BOT_LOGIN }}:${{ secrets.BOT_TOKEN }} --upload-file dist/*.deb ${{ gitea.server_url }}/api/packages/${{ github.repository_owner }}/debian/pool/default/${{ gitea.ref_type == 'tag' && 'main' || 'main-dev' }}/upload

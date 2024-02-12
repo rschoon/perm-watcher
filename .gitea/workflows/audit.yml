@@ -1,0 +1,15 @@
+name: Audit
+run-name: audit
+on:
+  schedule: '10 10 15 * *'
+
+jobs:
+  build:
+    runs-on: earthly
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Test
+        run: earthly +test
+      - name: Audit
+        run: earthly +audit
