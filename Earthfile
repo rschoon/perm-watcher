@@ -2,9 +2,8 @@
 VERSION 0.7
 
 setup:
+    ARG rust_version=1.76
     FROM docker.io/buildpack-deps:stretch
-
-    ENV RUST_VERSION=1.75
 
     RUN echo 'deb http://archive.debian.org/debian/ stretch contrib main non-free' > /etc/apt/sources.list
 
@@ -13,14 +12,12 @@ setup:
         && rm -rf /var/lib/apt/lists/*
 
     RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
-        sh -s -- -y --default-toolchain $RUST_VERSION --profile minimal \
+        sh -s -- -y --default-toolchain $rust_version --profile minimal \
         && /root/.cargo/bin/rustup component add clippy
     ENV PATH="/root/.cargo/bin:${PATH}"
     ENV CARGO_INCREMENTAL=0
 
-    # deb-s3 doesn't support control.tar.xz, so disable lzma feature
-    RUN cargo install --locked --no-default-features --version 1.36.0 cargo-deb
-    RUN cargo install --locked cargo-audit cargo-make
+    RUN cargo install --locked cargo-audit cargo-make cargo-deb
 
 fetch:
     FROM +setup
