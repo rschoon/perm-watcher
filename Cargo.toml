@@ -20,3 +20,7 @@ Release {{crate_name}} version {{version}}
 tag-message = """
 Release {{crate_name}} version {{version}}
 """
+
+[profile.release]
+panic = "abort"
+strip = "debuginfo"
