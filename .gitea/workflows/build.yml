@@ -18,5 +18,5 @@ jobs:
            name: debian package
            path: dist/*.deb
       - name: Publish debian package
-        if: ${{ gitea.ref_type == 'tag' || gitea.ref_name == 'master' }}
+        if: ${{ gitea.ref_type == 'tag' || gitea.ref_name == 'main' }}
         run: curl --user ${{ secrets.BOT_LOGIN }}:${{ secrets.BOT_TOKEN }} --upload-file dist/*.deb ${{ gitea.server_url }}/api/packages/${{ github.repository_owner }}/debian/pool/default/${{ gitea.ref_type == 'tag' && 'main' || 'main-dev' }}/upload
