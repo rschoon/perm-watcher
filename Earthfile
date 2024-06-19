@@ -1,8 +1,8 @@
 
-VERSION 0.7
+VERSION 0.8
 
 setup:
-    ARG rust_version=1.76
+    ARG rust_version=1.79
     FROM docker.io/buildpack-deps:stretch
 
     RUN echo 'deb http://archive.debian.org/debian/ stretch contrib main non-free' > /etc/apt/sources.list
