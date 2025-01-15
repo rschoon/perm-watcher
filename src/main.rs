@@ -127,6 +127,10 @@ fn handle_path(path: &Path, config: &PermConfig) {
 }
 
 fn handle_change(event: &notify::event::Event, config: &PermConfig) {
+    if !event.kind.is_create() && !event.kind.is_modify() {
+        return;
+    }
+
     for path in event.paths.iter() {
         handle_path(path, config);
     }
