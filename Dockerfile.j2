@@ -49,3 +49,10 @@ FROM fetch AS build
 RUN cargo build --release --color always
 ARG REF_TYPE=
 RUN REF_TYPE=$REF_TYPE DISTDIR=/dist ci/package.sh
+
+###
+
+FROM scratch AS build-export
+
+COPY --from=build /dist /
+
