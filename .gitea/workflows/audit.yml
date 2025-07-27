@@ -5,11 +5,12 @@ on:
 
 jobs:
   build:
-    runs-on: earthly
+    runs-on: bern
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
       - name: Test
-        run: earthly +test
+        run: bern --target test
       - name: Audit
-        run: earthly +audit
+        run: bern --target audit
+

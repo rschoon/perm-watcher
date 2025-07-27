@@ -4,14 +4,14 @@ on: [ push ]
 
 jobs:
   build:
-    runs-on: earthly
+    runs-on: bern
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
       - name: Test
-        run: earthly +test
+        run: bern --target test
       - name: Build
-        run: earthly -a +build/dist --REF_TYPE=${{gitea.ref_type}}
+        run: bern --output dist --build-arg REF_TYPE=${{gitea.ref_type}}
       - name: Archive debian package
         uses: https://gitea.com/actions/upload-artifact@v3
         with:
