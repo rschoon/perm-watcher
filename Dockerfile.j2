@@ -23,7 +23,7 @@ FROM setup AS fetch
 
 RUN mkdir /build
 WORKDIR /build
-COPY --dir Makefile.toml Cargo.toml Cargo.lock .
+COPY Makefile.toml Cargo.toml Cargo.lock ./
 RUN mkdir src && touch src/main.rs
 RUN cargo make fetch
 COPY . ./
@@ -49,4 +49,3 @@ FROM fetch AS build
 RUN cargo build --release --color always
 ARG REF_TYPE=
 RUN REF_TYPE=$REF_TYPE DISTDIR=/dist ci/package.sh
-SAVE ARTIFACT /dist
